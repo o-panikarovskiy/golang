@@ -1,0 +1,32 @@
+html,
+body {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    height: 100vh;
+    font: 14px Roboto, "Helvetica Neue", sans-serif;
+    line-height: 1.4em;
+    font-weight: 300;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.main {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+    align-items: center;
+    background: #fff;
+    margin: 0;
+}
+
+.calc {
+    width: 100%;
+    max-width: 1000px;
+}
+
+:focus {
+    outline: 0;
+}

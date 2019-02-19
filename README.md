@@ -1,1 +1,1 @@
-# golang
+Unzip nn/mnist.7z to nn/data
