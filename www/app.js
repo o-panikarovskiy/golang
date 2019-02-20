@@ -6,17 +6,12 @@
             super();
             const styles = `
             <style>
-                .info {
-                    font-weight: 300;
-                    margin-top: 10px;
-                }
             </style>
             `;
 
             const template = `
-                <h1 class="title">${this.getAttribute('text')}<h1>
+                <h1 class="title">${this.getAttribute('text')}</h1>
                 <canvas class="canvas-area" id="canvas" width="280" height="280"></canvas>
-                <div class="info" id="info"></div>
             `;
 
             this._shadow = this.attachShadow({ mode: 'open' });
@@ -59,16 +54,8 @@
             return this._b64ToUint8Array(output.toDataURL('image/png'));
         }
 
-        setInfo(text) {
-            this._info.textContent = text;
-        }
-
         get _canvas() {
             return this._shadow.getElementById('canvas');
-        }
-
-        get _info() {
-            return this._shadow.getElementById('info');
         }
 
         _mousedown = (e) => {
@@ -115,13 +102,22 @@
 
             const styles = `
                 <style>
-                    .calculator {               
-                        display: flex;
-                        align-items: center;
-                        justify-content: space-around;                
+                    .calculator {                                             
                         padding: 2em;
                         padding-bottom: 3em;
                         box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 25px 50px 0 rgba(0, 0, 0, 0.1);
+                    }
+
+                    .row1 {
+                        display: flex;
+                        align-items: center;
+                        justify-content: space-around;         
+                    }
+
+                    .row2 {
+                        display: flex;
+                        align-items: center;
+                        justify-content: flex-start;         
                     }
         
                     .input,
@@ -173,20 +169,34 @@
                     .center {
                         text-align: center
                     }
+
+                    .info {
+                        width: 280px;
+                        font-weight: 300;
+                        font-size: 12px;
+                        text-align: left;
+                        margin-top: 10px;
+                    }
                 </style>
             `
 
             const template = `
                 <div class="calculator">
-                    <canvas-painter id="input1" text="Draw 0-9" class="center"></canvas-painter>
-                    <h1 class="operator">X</h1>
-                    <canvas-painter id="input2" text="Draw 0-9" class="center"></canvas-painter>
-                    <button type="button" id="send" class="send">=</button>
-                    <div class="center">
-                        <h1 class="res-title">Result</h1>
-                        <div id="output" class="output"></div>
+                    <div class="row1">
+                        <canvas-painter id="input1" text="Draw 0-9" class="center"></canvas-painter>
+                        <h1 class="operator">X</h1>
+                        <canvas-painter id="input2" text="Draw 0-9" class="center"></canvas-painter>
+                        <button type="button" id="send" class="send">=</button>
+                        <div class="center">
+                            <h1 class="res-title">Result</h1>
+                            <div id="output" class="output"></div>
+                        </div>
                     </div>
-                </div>
+                    <div class="row2">
+                        <pre class="info" id="info1"></pre>
+                        <pre class="info" id="info2" style="margin-left:29px"></pre>
+                    </div>
+                </div>                
             `
 
             this._shadow = this.attachShadow({ mode: 'open' });
@@ -220,14 +230,22 @@
             return this._shadow.getElementById('send');
         }
 
+        get _info1() {
+            return this._shadow.getElementById('info1');
+        }
+
+        get _info2() {
+            return this._shadow.getElementById('info2');
+        }
+
         _showResult(results) {
             const a1 = results[0].answer;
             const a2 = results[1].answer;
-            
+
             const result = a1 * a2;
 
-            this._input1.setInfo(a1);
-            this._input2.setInfo(a2);
+            this._info1.textContent = JSON.stringify(results[0], null, 4);
+            this._info2.textContent = JSON.stringify(results[1], null, 4);
             this._output.textContent = result;
         }
 

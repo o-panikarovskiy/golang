@@ -2,7 +2,7 @@ package nn
 
 import (
 	"fmt"
-	"mime/multipart"
+	"io"
 	"os"
 
 	"gonum.org/v1/gonum/mat"
@@ -100,12 +100,14 @@ func (net *NeuralNetwork) Load() {
 }
 
 // ImagePredict get predict from image file
-func (net *NeuralNetwork) ImagePredict(file multipart.File) int {
+func (net *NeuralNetwork) ImagePredict(file io.Reader) (int, float64, []float64) {
 	input := dataFromFile(file)
 	output := net.Predict(input)
-	answer, _ := max(mat.Col(nil, 0, output))
+	col := mat.Col(nil, 0, output)
 
-	return answer
+	answer, accuracy := max(col)
+
+	return answer, accuracy, col
 }
 
 // CreateNetwork factory with random weights

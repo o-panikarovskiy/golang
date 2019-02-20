@@ -3,8 +3,8 @@ package nn
 import (
 	"image"
 	"image/png"
+	"io"
 	"math"
-	"mime/multipart"
 	"os"
 	"path/filepath"
 
@@ -115,7 +115,7 @@ func currentPath() (dir string, err error) {
 	return
 }
 
-func dataFromFile(imgFile multipart.File) (pixels []float64) {
+func dataFromFile(imgFile io.Reader) (pixels []float64) {
 	img, err := png.Decode(imgFile)
 	if err != nil {
 		panic(err)
