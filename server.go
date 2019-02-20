@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"log"
 	"net/http"
 
@@ -16,8 +17,15 @@ func main() {
 	http.Handle("/", http.FileServer(http.Dir("www")))
 	http.HandleFunc("/api/predict", controllers.GivePredict(&net))
 
-	log.Println("Start listening at 8080 port")
-	err := http.ListenAndServe(":8080", nil)
+	port := flag.String("port", "", "Port for listening")
+	flag.Parse()
+
+	if *port == "" {
+		*port = ":8080"
+	}
+
+	log.Printf("Start listening at %v port\n", *port)
+	err := http.ListenAndServe(*port, nil)
 	if err != nil {
 		log.Fatal("ListenAndServe: ", err)
 	}
