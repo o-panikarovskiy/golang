@@ -1,9 +1,9 @@
 package nn
 
 import (
-	"fmt"
 	"io"
 	"os"
+	"path/filepath"
 
 	"gonum.org/v1/gonum/mat"
 )
@@ -66,14 +66,12 @@ func (net *NeuralNetwork) Train(inputData []float64, targetData []float64) {
 
 // Save NeuralNetwork
 func (net *NeuralNetwork) Save() {
-	dir, _ := currentPath()
-
-	h, err := os.Create(fmt.Sprintf("%v/nn/data/hweights.model", dir))
+	h, err := os.Create("./data/hweights.model")
 	defer h.Close()
 	if err == nil {
 		net.hiddenWeights.MarshalBinaryTo(h)
 	}
-	o, err := os.Create(fmt.Sprintf("%v/nn/data/oweights.model", dir))
+	o, err := os.Create("./data/oweights.model")
 	defer o.Close()
 	if err == nil {
 		net.outputWeights.MarshalBinaryTo(o)
@@ -81,22 +79,30 @@ func (net *NeuralNetwork) Save() {
 }
 
 // Load NeuralNetwork
-func (net *NeuralNetwork) Load() {
-	dir, _ := currentPath()
+func (net *NeuralNetwork) Load() error {
+	var path string
 
-	h, err := os.Open(fmt.Sprintf("%v/nn/saves/hweights.model", dir))
+	path, _ = filepath.Abs("./src/nn/saves/hweights.model")
+	h, err := os.Open(path)
 	defer h.Close()
 	if err == nil {
 		net.hiddenWeights.Reset()
 		net.hiddenWeights.UnmarshalBinaryFrom(h)
+	} else {
+		return err
 	}
-	o, err := os.Open(fmt.Sprintf("%v/nn/saves/oweights.model", dir))
+
+	path, _ = filepath.Abs("./src/nn/saves/oweights.model")
+	o, err := os.Open(path)
 	defer o.Close()
 	if err == nil {
 		net.outputWeights.Reset()
 		net.outputWeights.UnmarshalBinaryFrom(o)
+	} else {
+		return err
 	}
-	return
+
+	return nil
 }
 
 // ImagePredict get predict from image file
@@ -126,13 +132,11 @@ func CreateNetwork(input, hidden, output int, rate float64) (net NeuralNetwork) 
 }
 
 // MnistTrain train network with mnist data
-func MnistTrain(net NeuralNetwork) {
-	mnistTrain(&net)
-	net.Save()
+func MnistTrain(net *NeuralNetwork) {
+	mnistTrain(net)
 }
 
 // MnistPredict train network with mnist data
-func MnistPredict(net NeuralNetwork) {
-	net.Load()
-	mnistPredict(&net)
+func MnistPredict(net *NeuralNetwork) {
+	mnistPredict(net)
 }

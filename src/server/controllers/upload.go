@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"../nn"
+	"../../nn"
 )
 
 type errorResponse struct {

@@ -12,4 +12,4 @@
 *.out
 
 .vscode
-nn/data
+src/nn/data
