@@ -22,6 +22,8 @@ func main() {
 
 	if *port == "" {
 		*port = ":8080"
+	} else {
+		*port = ":" + *port
 	}
 
 	log.Printf("Start listening at %v port\n", *port)
