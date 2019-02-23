@@ -2,44 +2,40 @@ package main
 
 import (
 	"flag"
-	"log"
+	"fmt"
 	"os"
 
 	"./src/nn"
 	"./src/server"
 )
 
-func main() {
-	var net = nn.CreateNetwork(784, 200, 10, 0.1)
+func loadNetwork(net *nn.NeuralNetwork) {
 	err := net.Load()
+
 	if err != nil {
-		log.Fatal(err)
+		fmt.Print(err)
+		os.Exit(1)
 	}
 
-	log.Println("NN Loaded")
+	fmt.Println("NN loaded")
+}
 
-	command := os.Args[1]
-	port := flag.String("port", "", "Port for listening")
+func main() {
+	net := nn.CreateNetwork(784, 200, 10, 0.1)
 
+	command := flag.String("cmd", "", "train | predict | server")
+	port := flag.String("port", "8080", "Port for listening")
+	file := flag.String("file", "", "MNIST CSV file for train or predict")
 	flag.Parse()
 
-	if *port == "" {
-		*port = ":8080"
-	} else {
-		*port = ":" + *port
-	}
-
-	// train or mass predict to determine the effectiveness of the trained network
-	switch command {
-	case "train":
-		nn.MnistTrain(&net)
+	if *command == "train" {
+		nn.MnistTrain(&net, *file)
 		net.Save()
-	case "predict":
-		net.Load()
-		nn.MnistPredict(&net)
-	case "server":
-		server.Start(*port, &net)
-	default:
-		// don't do anything
+	} else if *command == "predict" {
+		loadNetwork(&net)
+		nn.MnistPredict(&net, *file)
+	} else if *command == "server" {
+		loadNetwork(&net)
+		server.Start(":"+*port, &net)
 	}
 }

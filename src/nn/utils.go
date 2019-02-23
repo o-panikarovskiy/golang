@@ -5,8 +5,6 @@ import (
 	"image/png"
 	"io"
 	"math"
-	"os"
-	"path/filepath"
 
 	"gonum.org/v1/gonum/mat"
 	"gonum.org/v1/gonum/stat/distuv"
@@ -108,11 +106,6 @@ func max(v []float64) (int, float64) {
 	}
 
 	return maxI, maxV
-}
-
-func currentPath() (dir string, err error) {
-	dir, err = filepath.Abs(filepath.Dir(os.Args[0]))
-	return
 }
 
 func dataFromFile(imgFile io.Reader) (pixels []float64) {
